@@ -22,5 +22,8 @@
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
     "sendmail": "^1.6.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.29.0"
   }
 }

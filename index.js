@@ -15,7 +15,7 @@ const sendmail = require('sendmail')({
     silent: false,
     smtpPort: 465, // Default: 25
     smtpHost: 'smtp.mail.yahoo.com' // Default: -1 - extra smtp host after resolveMX
-})
+});
 
 const activeCodes = [];
 
@@ -28,45 +28,45 @@ client.on('interactionCreate', async (interaction) => {
 
     if (interaction.commandName === 'register') {
         const modal = new ModalBuilder()
-			.setCustomId('registerModal')
-			.setTitle('Register');
+            .setCustomId('registerModal')
+            .setTitle('Register');
         
-		const studentNumberInput = new TextInputBuilder()
+        const studentNumberInput = new TextInputBuilder()
             .setCustomId('studentNumberInput')
-            .setLabel("Please input your student number")
+            .setLabel('Please input your student number')
             .setStyle(TextInputStyle.Short)
             .setPlaceholder('n123456789')
             .setRequired(true);
 
-		const firstActionRow = new ActionRowBuilder().addComponents(studentNumberInput);
+        const firstActionRow = new ActionRowBuilder().addComponents(studentNumberInput);
 
-		modal.addComponents(firstActionRow);
+        modal.addComponents(firstActionRow);
 
-		await interaction.showModal(modal);
+        await interaction.showModal(modal);
     }
 });
 
 client.on(Events.InteractionCreate, async interaction => {
-    var studentEmail = "";
+    var studentEmail = '';
 
-	if (!interaction.isModalSubmit()) return;
+    if (!interaction.isModalSubmit()) return;
 
     // Get the data entered by the user
-	const studentNumber = interaction.fields.getTextInputValue('studentNumberInput');
-	console.log({ studentNumber });
+    const studentNumber = interaction.fields.getTextInputValue('studentNumberInput');
+    console.log({ studentNumber });
 
     if (!/[Nn]?[0-9]{6,12}/.test(studentNumber)){
         await interaction.reply({content: 'Invalid student number'});
         return;
     } else {
         if (studentNumber.charAt(0).toLowerCase() === 'n'){
-            studentEmail = studentNumber + "@qut.edu.au";
+            studentEmail = studentNumber + '@qut.edu.au';
         } else {
-            studentEmail = "n" + studentNumber + "@qut.edu.au";
+            studentEmail = 'n' + studentNumber + '@qut.edu.au';
         }
     }
 
-	if (interaction.customId === 'registerModal') {
+    if (interaction.customId === 'registerModal') {
         const code = [];
         for (let i = 0; i < 4; i++){
             code.push(Math.floor(Math.random() * 10));
@@ -77,17 +77,17 @@ client.on(Events.InteractionCreate, async interaction => {
         activeCodes.push(codeString);
 
         sendmail({
-                from: process.env.EMAIL,
-                to: studentEmail,
-                subject: 'IT Crew Discord Server Verification Code',
-                html: codeString,
+            from: process.env.EMAIL,
+            to: studentEmail,
+            subject: 'IT Crew Discord Server Verification Code',
+            html: codeString,
         }, function(err, reply) {
             console.log(err && err.stack);
             console.dir(reply);
         });
 
         await interaction.reply('You have been registered');
-	}
+    }
 });
 
 client.login(process.env.TOKEN);
