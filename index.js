@@ -1,93 +1,46 @@
-const { Client, GatewayIntentBits, ActionRowBuilder, Events, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+require('dotenv').config();
+const fs = require('node:fs');
+const path = require('node:path');
+const { Client, Collection, GatewayIntentBits, ActionRowBuilder, Events, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+
+// Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-const sendmail = require('sendmail')({
-    logger: {
-        debug: console.log,
-        info: console.info,
-        warn: console.warn,
-        error: console.error
-    },
-    dkim: { // Default: False
-        privateKey: process.env.EMAILPASS,
-        keySelector: 'mydomainkey'
-    },
-    silent: false,
-    smtpPort: 465, // Default: 25
-    smtpHost: 'smtp.mail.yahoo.com' // Default: -1 - extra smtp host after resolveMX
-});
+// Load commands from files
+client.commands = new Collection();
+const commandsPath = path.join(__dirname, "commands");
+const commandFiles = fs.readdirSync(commandsPath)
+  .filter(file => file.endsWith(".js"));
 
-const activeCodes = [];
+for (const file of commandFiles) {
+  const filePath = path.join(commandsPath, file);
+  const command = require(filePath);
+  // Set a new item in the Collection with the key as the command name and the value as the exported module
+  if ("data" in command && "execute" in command) {
+    client.commands.set(command.data.name, command);
+  } else {
+    console.log(`[WARNING] The command ${filePath} is missing a 'data' or 'execute' property.`);
+  }
+}
 
-client.on('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`);
-});
-
-client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isCommand()) return;
-
-    if (interaction.commandName === 'register') {
-        const modal = new ModalBuilder()
-            .setCustomId('registerModal')
-            .setTitle('Register');
-        
-        const studentNumberInput = new TextInputBuilder()
-            .setCustomId('studentNumberInput')
-            .setLabel('Please input your student number')
-            .setStyle(TextInputStyle.Short)
-            .setPlaceholder('n123456789')
-            .setRequired(true);
-
-        const firstActionRow = new ActionRowBuilder().addComponents(studentNumberInput);
-
-        modal.addComponents(firstActionRow);
-
-        await interaction.showModal(modal);
-    }
-});
-
+// Receive command interactions
 client.on(Events.InteractionCreate, async interaction => {
-    var studentEmail = '';
+  if (!interaction.isChatInputCommand()) return;
 
-    if (!interaction.isModalSubmit()) return;
+  // Get user's command input and match it to commands
+  const command = interaction.client.commands.get(interaction.commandName);
 
-    // Get the data entered by the user
-    const studentNumber = interaction.fields.getTextInputValue('studentNumberInput');
-    console.log({ studentNumber });
+  if (!command) {
+    console.error(`No command matching ${interaction.commandName} was found.`);
+    return;
+  }
 
-    if (!/[Nn]?[0-9]{6,12}/.test(studentNumber)){
-        await interaction.reply({content: 'Invalid student number'});
-        return;
-    } else {
-        if (studentNumber.charAt(0).toLowerCase() === 'n'){
-            studentEmail = studentNumber + '@qut.edu.au';
-        } else {
-            studentEmail = 'n' + studentNumber + '@qut.edu.au';
-        }
-    }
-
-    if (interaction.customId === 'registerModal') {
-        const code = [];
-        for (let i = 0; i < 4; i++){
-            code.push(Math.floor(Math.random() * 10));
-        }
-
-        const codeString = code.join('');
-
-        activeCodes.push(codeString);
-
-        sendmail({
-            from: process.env.EMAIL,
-            to: studentEmail,
-            subject: 'IT Crew Discord Server Verification Code',
-            html: codeString,
-        }, function(err, reply) {
-            console.log(err && err.stack);
-            console.dir(reply);
-        });
-
-        await interaction.reply('You have been registered');
-    }
+  try {
+    await command.execute(interaction);
+  } catch (error) {
+    console.error(error);
+    await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
+  }
 });
 
 client.login(process.env.TOKEN);
