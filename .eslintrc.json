@@ -53,7 +53,7 @@
         ],
         "eol-last": [
             "warn",
-            "always"
+            "never"
         ]
     }
 }
