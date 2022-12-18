@@ -2,8 +2,17 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const commands = [
     {
-        name: 'randomice',
-        description: 'Return a random mouse',
+        type: 1,
+        name: 'register',
+        description: 'Register a user',
+        // options: [ 
+        //     {
+        //         type: 3,
+        //         name: 'studentnumber',
+        //         description: 'Student number',
+        //         required: true
+        //     }
+        // ],
     },
 ];
 

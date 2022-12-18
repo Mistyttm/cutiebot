@@ -4,7 +4,7 @@
   "description": "A bot for helping QUT servers",
   "scripts": {
     "register": "node -r dotenv/config register.js",
-    "start": "node -r dotenv/config index.js"
+    "start": "node -r dotenv/config index.js emailBody.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
     "@discordjs/rest": "^1.3.0",
     "discord-api-types": "^0.37.17",
     "discord.js": "^14.6.0",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "sendmail": "^1.6.1"
   }
 }
