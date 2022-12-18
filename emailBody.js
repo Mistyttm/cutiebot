@@ -1,4 +1,4 @@
-export const emailHead = `<html><head><link rel="preconnect" href="https://fonts.googleapis.com">
+exports.emailHead = `<html><head><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -34,18 +34,21 @@ export const emailHead = `<html><head><link rel="preconnect" href="https://fonts
 </style>
 </head>`;
 
-export const emailBody1 = `<body>
+exports.emailBody1 = `<body>
 <div class="main_container">
     <div class="heading_text">
         Your verification code for `;
-export const emailBody2 = `</div>
+
+exports.emailBody2 = `</div>
 <div class="main_text">
     Hi <strong style="font-weight:600;">`;
-export const emailBody3 = `</strong>,<br>
+
+exports.emailBody3 = `</strong>,<br>
 Your verification code is:
 </div>
 <div class="verification_code">`;
-export const emailBody4 = `</div>
+
+exports.emailBody4 = `</div>
 <div class="footer_text" style="text-align: center;">
     Thank you for using our bot.
 </div>
