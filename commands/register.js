@@ -1,3 +1,37 @@
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+const commands = [
+    {
+        type: 1,
+        name: 'register',
+        description: 'Register a user',
+        // options: [ 
+        //     {
+        //         type: 3,
+        //         name: 'studentnumber',
+        //         description: 'Student number',
+        //         required: true
+        //     }
+        // ],
+    },
+];
+
+const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
+
+(async () => {
+    try {
+        console.log(`Started refreshing ${commands.length} application (/) commands.`);
+
+        await rest.put(Routes.applicationCommands(process.env.APP_ID), {
+            body: commands,
+        });
+
+        console.log('Successfully reloaded application (/) commands.');
+    } catch (error) {
+        console.error(error);
+    }
+})();
+
 const activeCodes = [];
 
 const sendmail = require('sendmail')({
