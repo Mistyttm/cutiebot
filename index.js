@@ -8,20 +8,6 @@ const token = process.env.TOKEN;
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-// Receive command interactions from events
-const eventsPath = path.join(__dirname, 'events');
-const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
-
-for (const file of eventFiles) {
-    const filePath = path.join(eventsPath, file);
-    const event = require(filePath);
-    if (event.once) {
-        client.once(event.name, (...args) => event.execute(...args));
-    } else {
-        client.on(event.name, (...args) => event.execute(...args));
-    }
-}
-
 // Load commands from files
 client.commands = new Collection();
 const commandsPath = path.join(__dirname, 'commands');
@@ -36,6 +22,20 @@ for (const file of commandFiles) {
         client.commands.set(command.data.name, command);
     } else {
         console.log(`[WARNING] The command ${filePath} is missing a 'data' or 'execute' property.`);
+    }
+}
+
+// Receive command interactions from events
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+
+for (const file of eventFiles) {
+    const filePath = path.join(eventsPath, file);
+    const event = require(filePath);
+    if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args));
+    } else {
+        client.on(event.name, (...args) => event.execute(...args));
     }
 }
 
