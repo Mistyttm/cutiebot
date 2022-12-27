@@ -20,12 +20,7 @@
   "dependencies": {
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
-<<<<<<< HEAD
     "nodemailer": "^6.8.0"
-=======
-    "sendmail": "^1.6.1",
-    "smtpjs": "^0.0.1"
->>>>>>> 0457244f50027beee821ec6360c58b09296dcee0
   },
   "devDependencies": {
     "eslint": "^8.29.0"
