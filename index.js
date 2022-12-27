@@ -2,6 +2,7 @@ require('dotenv').config();
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { writeVerificationCodes } = require('./src/data.js');
 
 const token = process.env.TOKEN;
 
@@ -42,5 +43,16 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(...args));
     }
 }
+
+// Handle ctrl+c exit
+process.on('SIGINT', () => {
+    process.exit(0);
+});
+
+// Write verification codes on exit
+process.on('exit', () => {
+    writeVerificationCodes();
+    console.log('bye!');
+});
 
 client.login(token);

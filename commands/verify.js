@@ -11,6 +11,7 @@ const idInput = new TextInputBuilder()
     .setLabel('Please enter your student number/staff ID:')
     .setStyle(TextInputStyle.Short)
     .setMinLength(3)
+    .setMaxLength(4000)
     .setPlaceholder('e.g. n12345678, john.smith')
     .setRequired(true);
 
