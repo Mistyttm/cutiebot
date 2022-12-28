@@ -2,6 +2,8 @@ const { Events } = require('discord.js');
 const { saveVerificationCode } = require('../src/data.js');
 const { sendVerificationEmail } = require('../src/email.js');
 
+// 'Verify' modal
+
 const isStudentId = (id) => {
     // At least 6 integers, and optionally starts with an 'n'
     return /[Nn]?[0-9]{6,}/.test(id);
@@ -44,7 +46,7 @@ module.exports = {
         try {
             // Specify which modal the following code is for - any other modals would need
             // another if statement.
-            if (interaction.customId === 'verificationModal') {
+            if (interaction.customId === 'idSubmitModal') {
                 // Get the inputted id from the modal
                 let userId = interaction.fields.getTextInputValue('idInput').toLowerCase();
 
@@ -59,10 +61,17 @@ module.exports = {
 
                     saveVerificationCode(userId, code, interaction.user.id);
                     sendVerificationEmail(userId, code, interaction);
-                    await interaction.reply('ID successfully submitted.');
+                    await interaction.reply({ content: 'ID successfully submitted.', ephemeral: true });
                 } else {
-                    await interaction.reply('Invalid ID entered, please try again.');
+                    await interaction.reply({ content: 'Invalid ID entered, please try again.', ephemeral: true });
                 }
+            }
+            
+            if (interaction.customId === 'codeSubmitModal') {
+                const code = interaction.fields.getTextInputValue('codeInput');
+                // Do some stuff with checking the codes and shit here probs
+                // need to reorganise first tho or else I'm gonna go insane
+                await interaction.reply(code);
             }
         } catch (error) {
             console.log(error);
