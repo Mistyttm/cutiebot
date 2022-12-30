@@ -6,15 +6,18 @@ module.exports = {
         if (!member) return;
 
         // Grab the Visitor role object
-        const role = await member.guild.roles.cache
+        const visitorRole = await member.guild.roles.cache
             .find((role) => role.name === 'Visitor');
 
-        if (!role) {
-            console.log(`No role matching ${role} was found.`);
+        if (!visitorRole) {
+            console.log(`No role matching ${visitorRole} was found.`);
         }
 
         try {
-            await member.roles.add(role, 'New user join');
+            // If the user already has the Visitor role then do nothing
+            // (prevents fighting with Dyno autoroles)
+            if (member.roles.resolve(visitorRole.id)) return;
+            await member.roles.add(visitorRole, 'New user join');
         } catch (error) {
             console.log(error);
         }
