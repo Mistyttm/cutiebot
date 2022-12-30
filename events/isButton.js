@@ -50,7 +50,11 @@ module.exports = {
         // Specify which modal the following code is for - any other modals would need
         // another if statement.
             if (interaction.customId === 'idSubmitButton') {
-                await interaction.showModal(idSubmitModal);
+                if (interaction.member.roles.cache.some((role) => role.name === 'Verified')) {
+                    await interaction.reply({ content: 'User already verified.', ephemeral: true });
+                } else {
+                    await interaction.showModal(idSubmitModal);
+                }
             }
 
             if (interaction.customId === 'codeSubmitButton') {

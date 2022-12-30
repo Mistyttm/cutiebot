@@ -2,26 +2,28 @@ const { writeFileSync, readFileSync, existsSync } = require('node:fs');
 
 const dataFile = 'database.json';
 
-let codes = [];
+let data = [];
 
-// Load the codes from the database
+// Load the data from the database
+// TODO: move/rewrite/parameterise this so that codes/verification data is located with 
+// verification code
 const loadVerificationCodes = async () => {
-    console.log('loading codes...');
+    console.log('loading data...');
     // If database doesn't already exist, create new file with empty array
     if (!existsSync(dataFile)) {
         writeFileSync(dataFile, '[]');
     }
 
     try {
-        const data = readFileSync(dataFile);
+        const loaded = readFileSync(dataFile, 'utf-8');
 
-        if (data.length > 0) {
-            codes = await JSON.parse(data);
-            console.log('codes loaded successfully.');
+        if (loaded.length > 0) {
+            data = await JSON.parse(loaded);
+            console.log('data loaded successfully.');
         }
 
-        if (data.length <= 0) {
-            console.log('no codes found, using empty database.');
+        if (loaded.length <= 0) {
+            console.log('no data found, using empty database.');
         }
     } catch (err) {
         console.log(err);
@@ -30,22 +32,49 @@ const loadVerificationCodes = async () => {
 
 loadVerificationCodes();
 
-// Write verification codes (called on exit from index.js)
+// Write verification data (called on exit from index.js)
 const writeVerificationCodes = () => {
-    const data = JSON.stringify(codes);
-    console.log('\nwriting codes...');
-    writeFileSync(dataFile, data);
-    console.log('codes written successfully.');
+    const stringData = JSON.stringify(data);
+    console.log('\nwriting data...');
+    writeFileSync(dataFile, stringData);
+    console.log('data written successfully.');
 };
 
 const saveVerificationCode = (id, code, user) => {
-    const data = {
+    const newUser = {
         id: id, // Submitted QUT id
         user: user, // Discord user id snowflake
         verificationCode: code,
     };
-    codes.push(data);
-    console.log(data);
+
+    if (data.some((obj) => obj.user === user)) {
+        data.filter((obj) => obj.user === user).map((obj) => {
+            obj.verificationCode = code;
+            obj.id = id;
+        });
+        console.log(`Updated existing user: ${newUser.user}`);
+    } else {
+        data.push(newUser);
+        console.log(`Added new user: ${newUser.user}`);
+    }
 };
 
-module.exports = { saveVerificationCode, writeVerificationCodes };
+/**
+ * Search for user by Discord ID
+ * @param {string} user The Discord ID to search for
+ * @returns {Object} Returns the matching user object
+ */
+const findUser = (user) => {
+    return data.find((obj) => (obj.user === user));
+};
+
+/**
+ * Search for user by supplied QUT ID
+ * @param {string} user The QUT ID to search for
+ * @returns {Object} Returns the matching user object
+ */
+const findQutId = (id) => {
+    return data.find((obj) => obj.id === id);
+};
+
+module.exports = { saveVerificationCode, writeVerificationCodes, findUser, findQutId };

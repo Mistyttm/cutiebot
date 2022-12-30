@@ -24,7 +24,7 @@ const transporter = createTransporter();
 // Sorry this is horrific <3
 const sendVerificationEmail = async (id, code, interaction) => {
     const guildName = interaction.guild.name;
-    const userName = `${interaction.user?.username}#${interaction.user.discriminator}`;
+    const userName = `${interaction.user.username}#${interaction.user.discriminator}`;
     const bodyText = `
 <!DOCTYPE html>
 <html>
