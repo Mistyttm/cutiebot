@@ -24,12 +24,12 @@ module.exports = {
             const reason = interaction.options.getString('reason');
             const guildName = interaction.guild.name;
             const userName = `${interaction.user?.username}#${interaction.user.discriminator}`;
-            guildMember.timeout(amount / 60 / 1000, reason)
-            console.log(`${userName} has timed out ${guildMember} for ${amount} minute(s) for: "${reason}" in ${guildName}`)
+            guildMember.timeout(amount / 60 / 1000, reason);
+            console.log(`${userName} has timed out ${guildMember} for ${amount} minute(s) for: "${reason}" in ${guildName}`);
             interaction.reply({ content: `${guildMember} has been timed out for ${amount} minute(s) for: ${reason}`, ephemeral: true });
         } catch (err) {
             console.log(err);
             interaction.reply({ content: 'An error occurred, sorry!', ephemeral: true });
         }
     }
-}
+};

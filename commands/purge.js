@@ -19,4 +19,4 @@ module.exports = {
             interaction.reply({ content: 'An error occurred, sorry!', ephemeral: true });
         }
     }
-}
+};
