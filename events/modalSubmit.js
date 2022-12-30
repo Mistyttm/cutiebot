@@ -14,18 +14,12 @@ const isStaffId = (id) => {
     return /\w+\.\w+/.test(id);
 };
 
-<<<<<<< HEAD
-const isValidId = (id) => {
-    return !!(isStaffId(id) || isStudentId(id));
-};
-=======
 /**
  * Checks id is either one of 'n000000' or 'name.name'
  * @param {string} id QUT ID to be checked
  * @returns {bool} True if valid, else false
  */
 const isValidId = (id) => !!(isStaffId(id) || isStudentId(id));
->>>>>>> d07b124 (refactor and comment isValidId)
 
 // Add 'n' to start of student id if not present, otherwise return the id unchanged
 const formatStudentId = (id) => !id.startsWith('n') ? `n${id}` : id;
