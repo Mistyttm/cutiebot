@@ -11,7 +11,7 @@ const configureCommand = new SlashCommandBuilder()
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels);
 
 const verificationEmbed = new EmbedBuilder()
-    .setColor(0xB9FBC0)
+    .setColor(0x00008B)
     .setDescription('Verify yourself.')
     .setAuthor({ name: 'CutieBot', iconURL: 'https://cdn.discordapp.com/avatars/1055472048899641365/4d6ff8bb2f760373dd8a41e77300e73a.webp?size=32' });
 
