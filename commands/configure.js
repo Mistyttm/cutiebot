@@ -13,7 +13,7 @@ const configureCommand = new SlashCommandBuilder()
 const verificationEmbed = new EmbedBuilder()
     .setColor(0xB9FBC0)
     .setDescription('Verify yourself.')
-    .setAuthor({ name: 'Verifier Sam', iconURL: 'https://www.shropshirestar.com/resizer/Q_ixmNLsvyunnWqu94LyXHZJRG0=/1200x0/cloudfront-us-east-1.images.arcpublishing.com/mna/KDZEY4VNWRGY3F5DDRKTJINN2I.jpg' });
+    .setAuthor({ name: 'CutieBot', iconURL: 'https://cdn.discordapp.com/avatars/1055472048899641365/4d6ff8bb2f760373dd8a41e77300e73a.webp?size=32' });
 
 const idSubmitButton = new ButtonBuilder()
     .setCustomId('idSubmitButton')

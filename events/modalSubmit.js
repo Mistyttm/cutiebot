@@ -15,10 +15,7 @@ const isStaffId = (id) => {
 };
 
 const isValidId = (id) => {
-    if (isStaffId(id) || isStudentId(id)) {
-        return true;
-    }
-    return false;
+    return !!(isStaffId(id) || isStudentId(id));
 };
 
 // Add 'n' to start of student id if not present, otherwise return the id unchanged
@@ -85,15 +82,15 @@ module.exports = {
                     member.roles.add(verifiedRole);
                     member.roles.remove(visitorRole);
                     console.log(`removed ${member.id} from role ${visitorRole}, added role ${verifiedRole}`);
-                    await interaction.reply({ content: `Matched ${interaction.user.username}#${interaction.user.discriminator} with ${member.id}: Added role ${verifiedRole}, removed ${visitorRole}`, ephemeral: true });
+                    await interaction.reply({ content: 'You have been successfully verified!!', ephemeral: true });
                 } else {
-                    await interaction.reply({ content: 'gtfo fake', ephemeral: true });
+                    await interaction.reply({ content: 'This is not a valid code.\nPlease Try again.', ephemeral: true });
                 }
             }
         } catch (error) {
             console.log(error);
             // Issues here with followUp vs reply creating timeout issues
-            // await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
         }
     }
 };
