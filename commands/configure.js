@@ -1,5 +1,7 @@
 const { SlashCommandBuilder, ChannelType, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
+const description = 'To gain full access to our server you\'ll need to verify your status as a member of QUT. Simply select the \'Verify\' button and enter your staff/student ID. You\'ll be sent an email containing your verification code — enter it using the \'Enter code\' button below :)';
+
 const configureCommand = new SlashCommandBuilder()
     .setName('configure')
     .setDescription('configure channel to be used for verification')
@@ -12,7 +14,7 @@ const configureCommand = new SlashCommandBuilder()
 
 const verificationEmbed = new EmbedBuilder()
     .setColor(0x00008B)
-    .setDescription('Verify yourself.')
+    .setDescription(description)
     .setAuthor({ name: 'CutieBot', iconURL: 'https://cdn.discordapp.com/avatars/1055472048899641365/4d6ff8bb2f760373dd8a41e77300e73a.webp?size=32' });
 
 const idSubmitButton = new ButtonBuilder()
