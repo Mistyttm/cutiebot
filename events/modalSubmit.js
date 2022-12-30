@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const { saveVerificationCode } = require('../src/data.js');
+const { saveVerificationCode, findUser } = require('../src/data.js');
 const { sendVerificationEmail } = require('../src/email.js');
 
 // 'Verify' modal
@@ -37,10 +37,12 @@ const generateVerificationCode = () => {
     return code;
 };
 
+// TODO: Try changing interaction.reply to an initial deferred reply, then use 
+// interaction.followUp for all subsequent messages to avoid issues
+// with error catching
 module.exports = {
     name: Events.InteractionCreate,
     async execute(interaction) {
-        // Ensures only modal submission interactions are replied to
         if (!interaction.isModalSubmit()) return;
         
         try {
@@ -52,26 +54,41 @@ module.exports = {
 
                 // Check if the id is a valid QUT id
                 if (isValidId(userId)) {
-                    const code = generateVerificationCode();
-
                     // If the ID is a student id then ensure it begins with an 'n'
                     if (isStudentId(userId)) {
                         userId = formatStudentId(userId);
                     }
 
-                    saveVerificationCode(userId, code, interaction.user.id);
+                    const code = generateVerificationCode();
+                    saveVerificationCode(userId, code, interaction.member.id);
                     sendVerificationEmail(userId, code, interaction);
                     await interaction.reply({ content: 'ID successfully submitted.', ephemeral: true });
-                } else {
+                }
+                else {
                     await interaction.reply({ content: 'Invalid ID entered, please try again.', ephemeral: true });
                 }
             }
             
+            // Submission of verification code
             if (interaction.customId === 'codeSubmitModal') {
                 const code = interaction.fields.getTextInputValue('codeInput');
-                // Do some stuff with checking the codes and shit here probs
-                // need to reorganise first tho or else I'm gonna go insane
-                await interaction.reply(code);
+                const verifiedRole = interaction.guild.roles.cache.find((role) => role.name === 'Verified');
+                const visitorRole = interaction.guild.roles.cache.find((role) => role.name === 'Visitor');
+                const member = interaction.member;
+                
+                // If there is a verification code stored matching the person 
+                // submitting the modal's Discord UUID, find it
+                const user = findUser(member.id);
+                // Try and match the verification code stored against the code
+                // submitted, and make sure the user is not already verified
+                if (user.verificationCode === code && !member.roles.cache.some((role) => role.name === 'Verified')) {
+                    member.roles.add(verifiedRole);
+                    member.roles.remove(visitorRole);
+                    console.log(`removed ${member.id} from role ${visitorRole}, added role ${verifiedRole}`);
+                    await interaction.reply({ content: `Matched ${interaction.user.username}#${interaction.user.discriminator} with ${member.id}: Added role ${verifiedRole}, removed ${visitorRole}`, ephemeral: true });
+                } else {
+                    await interaction.reply({ content: 'gtfo fake', ephemeral: true });
+                }
             }
         } catch (error) {
             console.log(error);

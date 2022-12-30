@@ -1,8 +1,8 @@
 require('dotenv').config();
-const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { writeVerificationCodes } = require('./src/data.js');
+const { readdirSync } = require('node:fs');
 
 const token = process.env.TOKEN;
 
@@ -10,13 +10,14 @@ const token = process.env.TOKEN;
 const client = new Client({ intents: [ 
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent, 
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
 ]});
 
 // Load commands from files
 client.commands = new Collection();
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath)
+const commandFiles = readdirSync(commandsPath)
     .filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -32,7 +33,7 @@ for (const file of commandFiles) {
 
 // Receive command interactions from events
 const eventsPath = path.join(__dirname, 'events');
-const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+const eventFiles = readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
     const filePath = path.join(eventsPath, file);
