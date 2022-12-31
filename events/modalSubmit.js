@@ -47,7 +47,6 @@ export default {
             // another if statement.
             if (interaction.customId === 'idSubmitModal') {
                 const userName = `${interaction.user.username}#${interaction.user.discriminator}`;
-
                 // Get the inputted id from the modal
                 let userId = interaction.fields.getTextInputValue('idInput').toLowerCase();
 
