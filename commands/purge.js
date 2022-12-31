@@ -1,6 +1,6 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('purge')
         .setDescription('Deletes Multiple messages at once')
@@ -10,13 +10,15 @@ module.exports = {
                 .setRequired(true))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
     async execute(interaction) {
+        interaction.deferReply();
         try {
             const amount = interaction.options.getInteger('amount');
+
             await interaction.channel.bulkDelete(amount, true);
-            await interaction.reply({ content: `Deleted ${amount} messages`, ephemeral: true });
+            await interaction.followUp({ content: `Deleted ${amount} messages`, ephemeral: true });
         } catch (err) {
             console.log(err);
-            interaction.reply({ content: 'An error occurred, sorry!', ephemeral: true });
+            interaction.followUp({ content: 'An error occurred, sorry!', ephemeral: true });
         }
-    }
+    },
 };

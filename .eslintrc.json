@@ -1,20 +1,29 @@
 {
     "env": {
-        "commonjs": true,
-        "es2021": true,
+        "es6": true,
+        "es2022": true,
         "node": true
     },
     "extends": "eslint:recommended",
     "overrides": [
     ],
     "parserOptions": {
-        "ecmaVersion": "latest"
+        "ecmaVersion": "latest",
+        "sourceType": "module"
     },
     "rules": {
         "vars-on-top": "warn",
+        "eqeqeq": "warn",
         "indent": [
             "warn",
             4
+        ],
+        "max-len": [
+            "warn",
+            {
+                "code": 120,
+                "ignoreUrls": true
+            }
         ],
         "linebreak-style": [
             "error",
@@ -39,9 +48,9 @@
             "warn",
             "always",
             {
-                "singleValue": false,
-                "objectsInArrays": false,
-                "arraysInArrays": false
+                "singleValue": true,
+                "objectsInArrays": true,
+                "arraysInArrays": true
             }
         ],
         "arrow-spacing": [
@@ -54,6 +63,75 @@
         "eol-last": [
             "error",
             "always"
-        ]
+        ],
+        "no-unused-vars": "warn",
+        "padding-line-between-statements": [
+            "warn",
+            { "blankLine": "always", "prev": ["const", "var"], "next": "*"},
+            { "blankLine": "any",    "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
+            { "blankLine": "never", "prev": "*", "next": "return" }
+        ],
+        "no-lone-blocks": [ "warn" ],
+        "padded-blocks": [
+            "warn",
+            "never" 
+        ],
+        "no-await-in-loop": "warn",
+        "no-extra-parens": "warn",
+        "dot-notation": "warn",
+        "func-names": [ "warn", "always" ],
+        "max-depth": [ "warn", 3 ],
+        "complexity": [ "warn" ],
+        "max-nested-callbacks": [ "warn", 3 ],
+        "no-else-return": "warn",
+        "no-useless-return": "warn",
+        "no-lonely-if": "warn",
+        "no-loop-func": "error",
+        "no-negated-condition": "warn",
+        "no-unneeded-ternary": "warn",
+        "no-var": "warn",
+        "prefer-arrow-callback": "warn",
+        "no-trailing-spaces": "warn",
+        "comma-dangle": [ "warn", "always-multiline" ],
+        "prefer-object-spread": "warn",
+        "prefer-template": "warn",
+        "require-await": "warn",
+        "sort-imports": [
+            "warn",
+            {
+                "memberSyntaxSortOrder": [ "none", "single", "multiple", "all" ],
+                "ignoreMemberSortOrder": true
+            }
+        ],
+        "block-spacing": "warn",
+        "arrow-body-style": [
+            "warn",
+            "as-needed",
+            {
+                "requireReturnForObjectLiteral": true
+            }
+        ],
+        "newline-per-chained-call": "warn",
+        "no-multiple-empty-lines": [
+            "warn",
+            {
+                "max": 1,
+                "maxEOF": 1,
+                "maxBOF": 0
+            }
+        ],
+        "nonblock-statement-body-position": ["warn", "beside", { "overrides": { "while": "below", "do": "below" } }],
+        "arrow-parens": [ "warn", "always" ],
+        "array-element-newline": [
+            "warn",
+            {
+                "multiline": true,
+                "minItems": 3
+            }
+        ],
+        "array-bracket-newline": ["warn", { "multiline": true, "minItems": 3 }],
+        "object-curly-newline": ["warn", { "minProperties": 4, "multiline": true }],
+        "object-curly-spacing": [ "warn", "always", { "arraysInObjects": true, "objectsInObjects": true } ],
+        "computed-property-spacing": [ "warn", "always" ]
     }
 }

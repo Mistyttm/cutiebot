@@ -1,13 +1,12 @@
-require('dotenv').config();
-const nodemailer = require('nodemailer');
+import dotenv from 'dotenv';
+import nodemailer from 'nodemailer';
 
-const HOST = process.env.HOST;
-const EMAIL = process.env.EMAIL;
-const EMAILPASS = process.env.EMAILPASS;
+dotenv.config();
+const { HOST, EMAIL, EMAILPASS } = process.env;
 
 // Create reusable transporter object using the default SMTP transport
-const createTransporter = () => {
-    return nodemailer.createTransport({
+const createTransporter = () =>
+    nodemailer.createTransport({
         host: HOST,
         port: 587,
         secure: false, // true for 465, false for other ports
@@ -16,7 +15,6 @@ const createTransporter = () => {
             pass: EMAILPASS,
         },
     });
-};
 
 // Initialise transporter
 const transporter = createTransporter();
@@ -139,4 +137,4 @@ const sendVerificationEmail = async (id, code, interaction) => {
         .catch((err) => console.log(err));
 };
 
-module.exports = { sendVerificationEmail };
+export default sendVerificationEmail;

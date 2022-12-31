@@ -1,43 +1,48 @@
-require('dotenv').config();
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const pjson = require('../package.json');
-const weather = require('openweather-apis');
+import dotenv from 'dotenv';
+import { pjson } from '../helpers/data.js';
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { AsyncWeather } from '@cicciosgamino/openweather-apis';
 
-const token = process.env.WEATHER_API_KEY;
+dotenv.config();
+const { WEATHER_API_KEY } = process.env;
+
+// Will not work without 'await', ignore hinting
+const weather = await new AsyncWeather();
 
 // configuring the weather api
 weather.setLang('en');
-weather.setCoordinate(27.4785, 153.0284);
+weather.setCoordinates(27.4785, 153.0284);
 weather.setUnits('metric');
-weather.setAPPID(token);
-let temperature;
-weather.getTemperature(function(err, temp){
-    temperature = temp;
-});
-let weathDesc;
-weather.getDescription(function(err, desc){
-    weathDesc = desc;
+weather.setApiKey(WEATHER_API_KEY);
+const temperature = await weather.getTemperature((err, temp) => {
+    if (err) console.log(err);
+    return temp;
 });
 
+const weatherDescription = await weather.getDescription((err, desc) => {
+    if (err) console.log(err);
+    return desc;
+});
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('weather')
         .setDescription('What\'s the weather at QUT?'),
     async execute(interaction) {
         try {
-
             const infoEmbed = new EmbedBuilder()
                 .setColor(0x00008B)
                 .setTitle(`${pjson.name} v${pjson.version}: Weather at QUT`)
-                .setDescription(`the current temperature is ${temperature}°C\n\n${weathDesc}`)
-                .setAuthor({ name: 'CutieBot', iconURL: 'https://cdn.discordapp.com/avatars/1055472048899641365/4d6ff8bb2f760373dd8a41e77300e73a.webp?size=32' });
-            await interaction.reply({
-                embeds: [infoEmbed],
-            });
+                .setDescription(`the current temperature is ${temperature}°C\n\n${weatherDescription}`)
+                .setAuthor({
+                    name: 'CutieBot',
+                    iconURL: 'https://cdn.discordapp.com/avatars/1055472048899641365/4d6ff8bb2f760373dd8a41e77300e73a.webp?size=32',
+                });
+
+            await interaction.reply({ embeds: [ infoEmbed ] });
         } catch (err) {
             console.log(err);
             interaction.reply({ content: 'An error occurred, sorry!', ephemeral: true });
         }
-    }
+    },
 };

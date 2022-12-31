@@ -1,6 +1,6 @@
-const { Events } = require('discord.js');
+import { Events } from 'discord.js';
 
-module.exports = {
+export default {
     name: Events.GuildMemberAdd,
     async execute(member) {
         if (!member) return;
@@ -21,5 +21,5 @@ module.exports = {
         } catch (error) {
             console.log(error);
         }
-    }
+    },
 };

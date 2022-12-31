@@ -1,21 +1,19 @@
-require('dotenv').config();
-const { readdirSync } = require('node:fs');
-const { REST, Routes } = require('discord.js');
+import dotenv from 'dotenv';
+import { readdirSync } from 'node:fs';
+import { REST, Routes } from 'discord.js';
 
-const token = process.env.TOKEN;
-const applicationId = process.env.APP_ID;
-
-const rest = new REST({ version: '10' }).setToken(token);
-
+dotenv.config();
+const { TOKEN, APP_ID } = process.env;
+const rest = new REST({ version: '10' }).setToken(TOKEN);
 const commands = [];
 
 // Grab all command files from the commands directory
-const commandFiles = readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = readdirSync('./commands').filter((file) => file.endsWith('.js'));
 
 // Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
 for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-    commands.push(command.data.toJSON());
+    const command = await import(`./commands/${file}`)
+    commands.push(command.default.data.toJSON());
 }
 
 (async () => {
@@ -24,7 +22,7 @@ for (const file of commandFiles) {
 
         // The put method is used to fully refresh all commands in the guild with the current set
         const data = await rest.put(
-            Routes.applicationCommands(applicationId),
+            Routes.applicationCommands(APP_ID),
             { body: commands },
         );
 

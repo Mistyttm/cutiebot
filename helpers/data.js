@@ -1,11 +1,11 @@
-const { writeFileSync, readFileSync, existsSync } = require('node:fs');
+import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 
 const dataFile = 'database.json';
 
 let data = [];
 
 // Load the data from the database
-// TODO: move/rewrite/parameterise this so that codes/verification data is located with 
+// TODO: move/rewrite/parameterise this so that codes/verification data is located with
 // verification code
 const loadVerificationCodes = async () => {
     console.log('loading data...');
@@ -33,14 +33,15 @@ const loadVerificationCodes = async () => {
 loadVerificationCodes();
 
 // Write verification data (called on exit from index.js)
-const writeVerificationCodes = () => {
+export const writeVerificationCodes = () => {
     const stringData = JSON.stringify(data);
+
     console.log('\nwriting data...');
     writeFileSync(dataFile, stringData);
     console.log('data written successfully.');
 };
 
-const saveVerificationCode = (id, code, user) => {
+export const saveVerificationCode = (id, code, user) => {
     const newUser = {
         id: id, // Submitted QUT id
         user: user, // Discord user id snowflake
@@ -64,17 +65,13 @@ const saveVerificationCode = (id, code, user) => {
  * @param {string} user The Discord ID to search for
  * @returns {Object} Returns the matching user object
  */
-const findUser = (user) => {
-    return data.find((obj) => (obj.user === user));
-};
+export const findUser = (user) => data.find((obj) => obj.user === user);
 
 /**
  * Search for user by supplied QUT ID
  * @param {string} user The QUT ID to search for
  * @returns {Object} Returns the matching user object
  */
-const findQutId = (id) => {
-    return data.find((obj) => obj.id === id);
-};
+export const findQutId = (id) => data.find((obj) => obj.id === id);
 
-module.exports = { saveVerificationCode, writeVerificationCodes, findUser, findQutId };
+export const pjson = JSON.parse(readFileSync('package.json', 'utf-8'));
