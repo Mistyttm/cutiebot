@@ -2,6 +2,7 @@
   "name": "cutiebot",
   "version": "1.0.0",
   "description": "A bot for helping QUT servers",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "deploy": "node deploy.js",
@@ -18,6 +19,7 @@
   },
   "homepage": "https://github.com/Mistyttm/cutiebot#readme",
   "dependencies": {
+    "@cicciosgamino/openweather-apis": "^5.2.0",
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
     "nodemailer": "^6.8.0",

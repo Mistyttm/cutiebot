@@ -1,49 +1,58 @@
-require('dotenv').config();
-const path = require('node:path');
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const { writeVerificationCodes } = require('./src/data.js');
-const { readdirSync } = require('node:fs');
+import dotenv from 'dotenv';
+import path from 'node:path';
+import { readdirSync } from 'node:fs';
+import url from 'url';
+import { writeVerificationCodes } from './helpers/data.js';
+import { Client, Collection, GatewayIntentBits } from 'discord.js';
 
-const token = process.env.TOKEN;
+dotenv.config();
+const { TOKEN } = process.env;
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Create a new client instance
-const client = new Client({ intents: [ 
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers,
-]});
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers,
+    ],
+});
 
 // Load commands from files
 client.commands = new Collection();
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = readdirSync(commandsPath)
-    .filter(file => file.endsWith('.js'));
+    .filter((file) => file.endsWith('.js'));
+const commands = commandFiles.map((file) => path.join(commandsPath, file));
 
-for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-    // Set a new item in the Collection with the key as the command name and the value as the exported module
-    if ('data' in command && 'execute' in command) {
-        client.commands.set(command.data.name, command);
-    } else {
-        console.log(`[WARNING] The command ${filePath} is missing a 'data' or 'execute' property.`);
-    }
-}
+commands.forEach((command) => {
+    import(command).then((command) => {
+        command = command.default;
+        if (command.data && command.execute) {
+            client.commands.set(command.data.name, command);
+        } else {
+            console.log(`[WARNING] The command ${command.data.name} is missing a 'data' or 'execute' property.`);
+        }
+    });
+});
 
 // Receive command interactions from events
 const eventsPath = path.join(__dirname, 'events');
-const eventFiles = readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+const eventFiles = readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
+const events = eventFiles.map((file) => path.join(eventsPath, file));
 
-for (const file of eventFiles) {
-    const filePath = path.join(eventsPath, file);
-    const event = require(filePath);
-    if (event.once) {
-        client.once(event.name, (...args) => event.execute(...args));
-    } else {
-        client.on(event.name, (...args) => event.execute(...args));
-    }
-}
+events.forEach((event) => {
+    import(event).then((event) => {
+        event = event.default;
+        if (event.once) {
+            client.once(event.name, (...args) => event.execute(...args));
+        } else {
+            client.on(event.name, (...args) => event.execute(...args));
+        }
+    });
+});
 
 // Handle ctrl+c exit
 process.on('SIGINT', () => {
@@ -56,4 +65,4 @@ process.on('exit', () => {
     console.log('bye!');
 });
 
-client.login(token);
+client.login(TOKEN);

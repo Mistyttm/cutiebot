@@ -1,5 +1,10 @@
-const { Events } = require('discord.js');
-const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
+import {
+    ActionRowBuilder,
+    Events,
+    ModalBuilder,
+    TextInputBuilder,
+    TextInputStyle,
+} from 'discord.js';
 
 // 'Verify' modal
 const idSubmitModal = new ModalBuilder()
@@ -40,12 +45,12 @@ const codeSubmitActionRow = new ActionRowBuilder()
 
 codeSubmitModal.addComponents(codeSubmitActionRow);
 
-module.exports = {
+export default {
     name: Events.InteractionCreate,
     async execute(interaction) {
         // Ensures only modal submission interactions are replied to
         if (!interaction.isButton()) return;
-        
+
         try {
         // Specify which modal the following code is for - any other modals would need
         // another if statement.
@@ -63,8 +68,7 @@ module.exports = {
         } catch (error) {
             console.log(error);
             // Issues here with followUp vs reply creating timeout issues
-            // await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
             await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
         }
-    }
+    },
 };
