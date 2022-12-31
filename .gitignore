@@ -1,6 +1,7 @@
 # Discord Bot
 .vagrant/
 .vscode
+.react-email
 
 /bin/*
 /node_modules/*
