@@ -102,4 +102,4 @@ const emailBody = (guildName, userName, code) => {
 </html>`;
 };
 
-module.exports = { emailBody };
+export { emailBody };

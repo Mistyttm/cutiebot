@@ -1,5 +1,9 @@
 import { Events } from 'discord.js';
+<<<<<<< HEAD
 import { emailBody } from '../helpers/emails/verificationEmail.js';
+=======
+import { emailBody } from '../helpers/emailBody.js';
+>>>>>>> c51a845 (update imports for modalSubmit.js, update exports for email.js and emailBody.js)
 import sendEmail from '../helpers/email.js';
 import { findUser, saveVerificationCode } from '../helpers/data.js';
 
