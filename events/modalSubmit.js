@@ -1,5 +1,5 @@
 import { Events } from 'discord.js';
-import sendVerificationEmail from '../helpers/email.js';
+import sendEmail from '../helpers/email.js';
 import { findUser, saveVerificationCode } from '../helpers/data.js';
 
 // 'Verify' modal
@@ -45,6 +45,8 @@ export default {
             // Specify which modal the following code is for - any other modals would need
             // another if statement.
             if (interaction.customId === 'idSubmitModal') {
+                const userName = `${interaction.user.username}#${interaction.user.discriminator}`;
+                
                 // Get the inputted id from the modal
                 let userId = interaction.fields.getTextInputValue('idInput').toLowerCase();
 
@@ -58,7 +60,12 @@ export default {
                     const code = generateVerificationCode();
 
                     saveVerificationCode(userId, code, interaction.member.id);
-                    sendVerificationEmail(userId, code, interaction);
+                    sendEmail({
+                        to: `${userId}@qut.edu.au`, // Receiver address
+                        subject: 'Discord Verification Code', // Subject line
+                        text: `Your code is: ${code}`, // Plain text body
+                        html: emailBody(interaction.guild.name, userName, code),
+                    });
                     await interaction.reply({ content: 'ID successfully submitted.', ephemeral: true });
                 }
                 else {
