@@ -1,4 +1,5 @@
 import { Events } from 'discord.js';
+import { emailBody } from '../helpers/emailBody.js';
 import sendEmail from '../helpers/email.js';
 import { findUser, saveVerificationCode } from '../helpers/data.js';
 
