@@ -8,7 +8,9 @@ import { Client, Collection, GatewayIntentBits } from 'discord.js';
 dotenv.config();
 const { TOKEN } = process.env;
 const __filename = url.fileURLToPath(import.meta.url);
+console.log(__filename);
 const __dirname = path.dirname(__filename);
+console.log(__dirname);
 
 // Create a new client instance
 const client = new Client({
