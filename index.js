@@ -1,14 +1,12 @@
 import dotenv from 'dotenv';
 import path from 'node:path';
 import { readdirSync } from 'node:fs';
-import url from 'url';
+import { pathToFileURL } from 'node:url';
 import { writeVerificationCodes } from './helpers/data.js';
 import { Client, Collection, GatewayIntentBits } from 'discord.js';
 
 dotenv.config();
 const { TOKEN } = process.env;
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Create a new client instance
 const client = new Client({
@@ -22,10 +20,10 @@ const client = new Client({
 
 // Load commands from files
 client.commands = new Collection();
-const commandsPath = path.join(__dirname, 'commands');
+const commandsPath = pathToFileURL('commands');
 const commandFiles = readdirSync(commandsPath)
     .filter((file) => file.endsWith('.js'));
-const commands = commandFiles.map((file) => path.join(commandsPath, file));
+const commands = commandFiles.map((file) => path.join(commandsPath.href, file));
 
 commands.forEach((command) => {
     import(command).then((command) => {
@@ -39,9 +37,9 @@ commands.forEach((command) => {
 });
 
 // Receive command interactions from events
-const eventsPath = path.join(__dirname, 'events');
+const eventsPath = pathToFileURL('events')
 const eventFiles = readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
-const events = eventFiles.map((file) => path.join(eventsPath, file));
+const events = eventFiles.map((file) => path.join(eventsPath.href, file));
 
 events.forEach((event) => {
     import(event).then((event) => {
