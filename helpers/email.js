@@ -19,16 +19,15 @@ const createTransporter = () =>
 // Initialise transporter
 const transporter = createTransporter();
 
-// Sorry this is horrific <3
-const sendEmail = async ({ to, subject, text, html }) => {
+async function sendEmail({ to, subject, text, html }) {
     await transporter.sendMail({
-        from: EMAIL, // Sender address
-        to: to, // Receiver address
-        subject: subject, // Subject line
-        text: text, // Plain text body
+        from: EMAIL,
+        to: to,
+        subject: subject,
+        text: text,
         html: html,
     }).then((res) => console.log(res))
         .catch((err) => console.log(err));
-};
+}
 
 export default sendEmail;

@@ -22,7 +22,9 @@
             "warn",
             {
                 "code": 120,
-                "ignoreUrls": true
+                "ignoreUrls": true,
+                "ignoreStrings": true,
+                "ignoreTemplateLiterals": true
             }
         ],
         "linebreak-style": [
@@ -131,7 +133,6 @@
             }
         ],
         "array-bracket-newline": ["warn", { "multiline": true, "minItems": 3 }],
-        "object-curly-newline": ["warn", { "minProperties": 4, "multiline": true }],
         "object-curly-spacing": [ "warn", "always", { "arraysInObjects": true, "objectsInObjects": true } ],
         "computed-property-spacing": [ "warn", "always" ]
     }
