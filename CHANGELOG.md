@@ -3,10 +3,7 @@
 ## v1.1.0
 
 - Convert codebase to ES6 syntax
-<<<<<<< HEAD
 - Fix bug stopping cutiebot from running on windows (significant backend rewrites)
-=======
->>>>>>> 123999e (CHANGELOG.md)
 
 ## v1.0.0
 
