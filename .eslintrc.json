@@ -100,7 +100,8 @@
             "warn",
             {
                 "memberSyntaxSortOrder": [ "none", "single", "multiple", "all" ],
-                "ignoreMemberSortOrder": true
+                "ignoreMemberSort": true,
+                "ignoreDeclarationSort": true
             }
         ],
         "block-spacing": "warn",

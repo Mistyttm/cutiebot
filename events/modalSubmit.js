@@ -1,5 +1,5 @@
 import { Events } from 'discord.js';
-import { emailBody } from '../helpers/emailBody.js';
+import { emailBody } from '../helpers/emails/verificationEmail.js';
 import sendEmail from '../helpers/email.js';
 import { findUser, saveVerificationCode } from '../helpers/data.js';
 
@@ -47,7 +47,7 @@ export default {
             // another if statement.
             if (interaction.customId === 'idSubmitModal') {
                 const userName = `${interaction.user.username}#${interaction.user.discriminator}`;
-                
+
                 // Get the inputted id from the modal
                 let userId = interaction.fields.getTextInputValue('idInput').toLowerCase();
 
