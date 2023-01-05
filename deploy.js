@@ -14,15 +14,15 @@ const commandFiles = readdirSync(commandsPath)
     .filter((file) => file.endsWith('.js'));
 
 // Start grabbing the SlashCommandBuilder#toJSON() output of each command's data for deployment
-const promises = commandFiles.map(async (file) => {
+const commandPromise = commandFiles.map(async (file) => {
     const filePath = path.join(commandsPath.href, file);
     const command = await import(filePath);
     return command.default.data.toJSON();
-    });
+});
 
 // Wait for all the command data to be fully loaded (no unresolved promises)
 // Source: https://zellwk.com/blog/async-await-in-loops/
-const commands = await Promise.all(promises);
+const commands = await Promise.all(commandPromise);
 
 (async () => {
     try {
