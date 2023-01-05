@@ -7,29 +7,31 @@ import { REST, Routes } from 'discord.js';
 dotenv.config();
 const { TOKEN, APP_ID } = process.env;
 const rest = new REST({ version: '10' }).setToken(TOKEN);
-const commandData = [];
 
 // Grab all command files from the commands directory
 const commandsPath = pathToFileURL('commands');
-const commandFiles = readdirSync(pathToFileURL('commands'))
+const commandFiles = readdirSync(commandsPath)
     .filter((file) => file.endsWith('.js'));
-const commands = commandFiles.map((file) => path.join(commandsPath.href, file));
 
-// Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
-for (const file of commands) {
-    const command = await import(file);
+// Start grabbing the SlashCommandBuilder#toJSON() output of each command's data for deployment
+const promises = commandFiles.map(async (file) => {
+    const filePath = path.join(commandsPath.href, file);
+    const command = await import(filePath);
+    return command.default.data.toJSON();
+    });
 
-    commandData.push(command.default.data.toJSON());
-};
+// Wait for all the command data to be fully loaded (no unresolved promises)
+// Source: https://zellwk.com/blog/async-await-in-loops/
+const commands = await Promise.all(promises);
 
 (async () => {
     try {
-        console.log(`Started refreshing ${commandData.length} application (/) commands.`);
+        console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
         // The put method is used to fully refresh all commands in the guild with the current set
         const data = await rest.put(
             Routes.applicationCommands(APP_ID),
-            { body: commandData },
+            { body: commands },
         );
 
         console.log(`Successfully reloaded ${data.length} application (/) commands.`);
