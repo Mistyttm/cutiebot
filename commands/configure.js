@@ -8,7 +8,7 @@ import {
     SlashCommandBuilder,
 } from 'discord.js';
 
-const description = `To gain full access to our server you'll need to verify your status as a member of QUT. Simply select the 'Verify' button and enter your staff/student ID. You'll be sent an email containing your verification code — enter it using the 'Enter code' button below :)`;
+const description = 'To gain full access to our server you\'ll need to verify your status as a member of QUT. Simply select the \'Verify\' button and enter your staff/student ID. You\'ll be sent an email containing your verification code — enter it using the \'Enter code\' button below :)';
 
 const configureCommand = new SlashCommandBuilder()
     .setName('configure')

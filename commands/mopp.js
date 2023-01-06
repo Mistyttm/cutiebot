@@ -6,7 +6,7 @@ It is the student code of conduct and provides useful information on things like
 
 If you are seeing this you should probably take a look at this page:
                 
-**http://www.mopp.qut.edu.au/E/E_02_01.jsp**`
+**http://www.mopp.qut.edu.au/E/E_02_01.jsp**`;
 
 export default {
     data: new SlashCommandBuilder()
