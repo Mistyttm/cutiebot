@@ -62,14 +62,14 @@ export const saveVerificationCode = (id, code, user) => {
 
 /**
  * Search for user by Discord ID
- * @param {string} user The Discord ID to search for
+ * @param {String} user The Discord ID to search for
  * @returns {Object} Returns the matching user object
  */
 export const findUser = (user) => data.find((obj) => obj.user === user);
 
 /**
  * Search for user by supplied QUT ID
- * @param {string} user The QUT ID to search for
+ * @param {String} user The QUT ID to search for
  * @returns {Object} Returns the matching user object
  */
 export const findQutId = (id) => data.find((obj) => obj.id === id);
@@ -77,7 +77,7 @@ export const findQutId = (id) => data.find((obj) => obj.id === id);
 /**
  * Check if a user has a specific role
  * @param {Snowflake} user the member object of the user (e.g. interaction.member)
- * @param {string} roleName the name of the role to search for (case-sensitive)
+ * @param {String} roleName the name of the role to search for (case-sensitive)
  * @returns {Boolean} true if the user has the role provided, else false
  */
 export const checkUserRole = (user, roleName) => user.roles.cache.some((role) => role.name === roleName);

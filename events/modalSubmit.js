@@ -13,8 +13,8 @@ const isStaffId = (id) => /\w+\.\w+/.test(id);
 
 /**
  * Checks id is either one of 'n000000' or 'name.name'
- * @param {string} id QUT ID to be checked
- * @returns {bool} True if valid, else false
+ * @param {String} id QUT ID to be checked
+ * @returns {Boolean} True if valid, else false
  */
 const isValidId = (id) => !!(isStaffId(id) || isStudentId(id));
 
