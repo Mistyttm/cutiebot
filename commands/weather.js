@@ -16,13 +16,11 @@ weather.setUnits('metric');
 weather.setApiKey(WEATHER_API_KEY);
 const temperature = await weather.getTemperature((err, temp) => {
     if (err) console.log(err);
-    console.log(temp, err);
     return temp;
 });
 
 const weatherDescription = await weather.getDescription((err, desc) => {
     if (err) console.log(err);
-    console.log(desc, err);
     return desc;
 });
 
