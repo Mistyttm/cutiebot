@@ -12,10 +12,10 @@ const description = 'To gain full access to our server you\'ll need to verify yo
 
 const configureCommand = new SlashCommandBuilder()
     .setName('configure')
-    .setDescription('configure channel to be used for verification')
+    .setDescription('Configure channel to be used for verification')
     .addChannelOption((option) =>
         option.setName('channel')
-            .setDescription('which channel to use')
+            .setDescription('Which channel to use')
             .addChannelTypes(ChannelType.GuildText)
             .setRequired(true))
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels);

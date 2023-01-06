@@ -89,11 +89,11 @@ export default {
                 if (user.verificationCode === code && !member.roles.cache.some((role) => role.name === 'Verified')) {
                     member.roles.add(verifiedRole);
                     member.roles.remove(visitorRole);
-                    console.log(`removed ${member.id} from role ${visitorRole}, added role ${verifiedRole}`);
-                    await interaction.reply({ content: 'You have been successfully verified!!', ephemeral: true });
+                    console.log(`Removed ${member.id} from role ${visitorRole}, added role ${verifiedRole}`);
+                    await interaction.reply({ content: 'You have been successfully verified!', ephemeral: true });
                 } else {
                     await interaction.reply({
-                        content: 'This is not a valid code.\nPlease Try again.',
+                        content: 'This is not a valid code.\nPlease try again.',
                         ephemeral: true,
                     });
                 }

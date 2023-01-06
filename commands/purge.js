@@ -3,10 +3,10 @@ import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 export default {
     data: new SlashCommandBuilder()
         .setName('purge')
-        .setDescription('Deletes Multiple messages at once')
+        .setDescription('Deletes multiple messages at once')
         .addIntegerOption((option) =>
             option.setName('amount')
-                .setDescription('amount of messages to delete')
+                .setDescription('Amount of messages to delete')
                 .setRequired(true))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
     async execute(interaction) {

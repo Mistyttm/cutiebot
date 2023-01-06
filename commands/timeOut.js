@@ -10,7 +10,7 @@ export default {
                 .setRequired(true))
         .addIntegerOption((option) =>
             option.setName('time')
-                .setDescription('How long to time out the user in minutes')
+                .setDescription('How long to time out the user (in minutes)')
                 .setRequired(true))
         .addStringOption((option) =>
             option.setName('reason')
@@ -23,7 +23,7 @@ export default {
             const amount = interaction.options.getInteger('time');
             const reason = interaction.options.getString('reason');
             const guildName = interaction.guild.name;
-            const userName = `${interaction.user?.username}#${interaction.user.discriminator}`;
+            const userName = `${interaction.user.username}#${interaction.user.discriminator}`;
 
             guildMember.timeout(amount / 60 / 1000, reason);
             console.log(

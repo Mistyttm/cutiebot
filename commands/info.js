@@ -9,7 +9,7 @@ This project is completely open source and any and all people are allowed to con
 export default {
     data: new SlashCommandBuilder()
         .setName('info')
-        .setDescription('Info about the bot'),
+        .setDescription('Info about CutieBot'),
     async execute(interaction) {
         try {
             const infoEmbed = new EmbedBuilder()
