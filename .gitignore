@@ -1,6 +1,7 @@
 # Discord Bot
 .vagrant/
 .vscode
+*.code-workspace
 
 /bin/*
 /node_modules/*

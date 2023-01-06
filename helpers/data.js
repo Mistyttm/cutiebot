@@ -8,7 +8,7 @@ let data = [];
 // TODO: move/rewrite/parameterise this so that codes/verification data is located with
 // verification code
 const loadVerificationCodes = async () => {
-    console.log('loading data...');
+    console.log('Loading data...');
     // If database doesn't already exist, create new file with empty array
     if (!existsSync(dataFile)) {
         writeFileSync(dataFile, '[]');
@@ -19,11 +19,11 @@ const loadVerificationCodes = async () => {
 
         if (loaded.length > 0) {
             data = await JSON.parse(loaded);
-            console.log('data loaded successfully.');
+            console.log('Data loaded successfully.');
         }
 
         if (loaded.length <= 0) {
-            console.log('no data found, using empty database.');
+            console.log('No data found, using empty database.');
         }
     } catch (err) {
         console.log(err);
@@ -36,9 +36,9 @@ loadVerificationCodes();
 export const writeVerificationCodes = () => {
     const stringData = JSON.stringify(data);
 
-    console.log('\nwriting data...');
+    console.log('\nWriting data...');
     writeFileSync(dataFile, stringData);
-    console.log('data written successfully.');
+    console.log('Data written successfully.');
 };
 
 export const saveVerificationCode = (id, code, user) => {

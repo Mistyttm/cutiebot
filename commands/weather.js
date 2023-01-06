@@ -16,11 +16,13 @@ weather.setUnits('metric');
 weather.setApiKey(WEATHER_API_KEY);
 const temperature = await weather.getTemperature((err, temp) => {
     if (err) console.log(err);
+    console.log(temp, err);
     return temp;
 });
 
 const weatherDescription = await weather.getDescription((err, desc) => {
     if (err) console.log(err);
+    console.log(desc, err);
     return desc;
 });
 
@@ -33,7 +35,7 @@ export default {
             const infoEmbed = new EmbedBuilder()
                 .setColor(0x00008B)
                 .setTitle(`${pjson.name} v${pjson.version}: Weather at QUT`)
-                .setDescription(`the current temperature is ${temperature}°C\n\n${weatherDescription}`)
+                .setDescription(`The current temperature is ${Math.round(temperature)}°C\n\n${weatherDescription.charAt(0).toUpperCase().concat(weatherDescription.slice(1))}`)
                 .setAuthor({
                     name: 'CutieBot',
                     iconURL: 'https://cdn.discordapp.com/avatars/1055472048899641365/4d6ff8bb2f760373dd8a41e77300e73a.webp?size=32',
