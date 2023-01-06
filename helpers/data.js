@@ -74,4 +74,12 @@ export const findUser = (user) => data.find((obj) => obj.user === user);
  */
 export const findQutId = (id) => data.find((obj) => obj.id === id);
 
+/**
+ * Check if a user has a specific role
+ * @param {Snowflake} user the member object of the user (e.g. interaction.member)
+ * @param {string} roleName the name of the role to search for (case-sensitive)
+ * @returns {Boolean} true if the user has the role provided, else false
+ */
+export const checkUserRole = (user, roleName) => user.roles.cache.some((role) => role.name === roleName);
+
 export const pjson = JSON.parse(readFileSync('package.json', 'utf-8'));

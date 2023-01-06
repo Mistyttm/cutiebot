@@ -5,6 +5,7 @@ import {
     TextInputBuilder,
     TextInputStyle,
 } from 'discord.js';
+import { checkUserRole } from '../helpers/data.js';
 
 // 'Verify' modal
 const idSubmitModal = new ModalBuilder()
@@ -55,7 +56,7 @@ export default {
         // Specify which modal the following code is for - any other modals would need
         // another if statement.
             if (interaction.customId === 'idSubmitButton') {
-                if (interaction.member.roles.cache.some((role) => role.name === 'Verified')) {
+                if (checkUserRole(interaction.member, 'Verified')) {
                     await interaction.reply({ content: 'User already verified.', ephemeral: true });
                 } else {
                     await interaction.showModal(idSubmitModal);
@@ -63,7 +64,11 @@ export default {
             }
 
             if (interaction.customId === 'codeSubmitButton') {
-                await interaction.showModal(codeSubmitModal);
+                if (checkUserRole(interaction.member, 'Verified')) {
+                    await interaction.reply({ content: 'User already verified.', ephemeral: true });
+                } else {
+                    await interaction.showModal(codeSubmitModal);
+                }
             }
         } catch (error) {
             console.log(error);
