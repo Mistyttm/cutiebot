@@ -56,7 +56,7 @@ const buildUrl = (apiKey, location='-27.4785213,153.0261705') =>
 // e.g. without this, 'Manly, QLD' and 'Manly, NSW' would both show up as 'Manly, Australia'
 const localiseAustralianResults = (locationData) => {
     const states = {
-        'Australian Capital Territory': 'AU',
+        'Australian Capital Territory': 'ACT',
         'New South Wales': 'NSW',
         'Northern Territory': 'NT',
         'South Australia': 'SA',
