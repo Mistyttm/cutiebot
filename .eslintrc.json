@@ -133,7 +133,6 @@
             }
         ],
         "array-bracket-newline": ["warn", { "multiline": true, "minItems": 3 }],
-        "object-curly-spacing": [ "warn", "always", { "arraysInObjects": true, "objectsInObjects": true } ],
-        "computed-property-spacing": [ "warn", "always" ]
+        "object-curly-spacing": [ "warn", "always", { "arraysInObjects": true, "objectsInObjects": true } ]
     }
 }

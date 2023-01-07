@@ -1,28 +1,25 @@
 import dotenv from 'dotenv';
 import { pjson } from '../helpers/data.js';
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import { AsyncWeather } from '@cicciosgamino/openweather-apis';
 
 dotenv.config();
 const { WEATHER_API_KEY } = process.env;
+const url = `http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=Brisbane`;
+const weatherEmbed = new EmbedBuilder()
+    .setColor(0x00008B)
+    .setTitle(`${pjson.versionName}: Weather at QUT`)
+    .setAuthor(pjson.author);
 
-// Will not work without 'await', ignore hinting
-const weather = await new AsyncWeather();
-
-// configuring the weather api
-weather.setLang('en');
-weather.setCoordinates(27.4785, 153.0284);
-weather.setUnits('metric');
-weather.setApiKey(WEATHER_API_KEY);
-const temperature = await weather.getTemperature((err, temp) => {
-    if (err) console.log(err);
-    return temp;
-});
-
-const weatherDescription = await weather.getDescription((err, desc) => {
-    if (err) console.log(err);
-    return desc;
-});
+const getWeatherData = async () => {
+    const res = await fetch(url);
+    const data = await res.json();
+    const modifiedData = {
+        temperature: Math.round(data.current?.temp_c),
+        description: data.current?.condition?.text,
+        image: `https:${data.current?.condition?.icon}`,
+    };
+    return modifiedData;
+};
 
 export default {
     data: new SlashCommandBuilder()
@@ -30,16 +27,11 @@ export default {
         .setDescription('What\'s the weather at QUT?'),
     async execute(interaction) {
         try {
-            const infoEmbed = new EmbedBuilder()
-                .setColor(0x00008B)
-                .setTitle(`${pjson.name} v${pjson.version}: Weather at QUT`)
-                .setDescription(`The current temperature is ${Math.round(temperature)}°C\n\n${weatherDescription.charAt(0).toUpperCase().concat(weatherDescription.slice(1))}`)
-                .setAuthor({
-                    name: 'CutieBot',
-                    iconURL: 'https://cdn.discordapp.com/avatars/1055472048899641365/4d6ff8bb2f760373dd8a41e77300e73a.webp?size=32',
-                });
+            const { temperature, description, image } = await getWeatherData();
 
-            await interaction.reply({ embeds: [ infoEmbed ] });
+            weatherEmbed.setImage(image)
+                .setDescription(`The current temperature is ${temperature}°C.\n\n${description}.`);
+            await interaction.reply({ embeds: [ weatherEmbed ] });
         } catch (err) {
             console.log(err);
             interaction.reply({ content: 'An error occurred, sorry!', ephemeral: true });
