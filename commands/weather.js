@@ -30,11 +30,6 @@ const getWeatherData = async (locationOption) => {
     const res = await fetch(buildUrl(WEATHER_API_KEY, locationOption));
 
     if (!res.ok) {
-        // If an empty object is returned, throw an error
-        if (res.status === 400 && (await res.json()).length === 0) {
-            throw new Error('WEATHER: Sorry, an error occurred whilst fetching data');
-        }
-
         // If the response contains a JSON object with a message, include the message with the error
         if (res.status === 400) {
             const data = await res.json();
