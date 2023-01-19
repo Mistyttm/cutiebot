@@ -29,19 +29,15 @@ const buildUrl = (apiKey, location) =>
 const getWeatherData = async (locationOption) => {
     const res = await fetch(buildUrl(WEATHER_API_KEY, locationOption));
 
-
-    if(!res.ok){
-
-        if(res.status === 400 && (await res.json()).length === 0){
-            throw new Error({
-                message: 'WEATHER: Sorry, an error occurred whilst fetching data',
-            });
+    if (!res.ok) {
+        // If an empty object is returned, throw an error
+        if (res.status === 400 && (await res.json()).length === 0) {
+            throw new Error('WEATHER: Sorry, an error occurred whilst fetching data');
         }
 
-        //if an empty object is returned, throw an error
-        if(res.status === 400){
+        // If the response contains a JSON object with a message, include the message with the error
+        if (res.status === 400) {
             const data = await res.json();
-
             throw new Error(`WEATHER: Sorry, ${data.error?.message.toLowerCase()}`);
         }
 
@@ -50,9 +46,6 @@ const getWeatherData = async (locationOption) => {
             code: res.status,
         });
     }
-
-
-
     const data = await res.json();
 
     // Format the data and return it as an object
@@ -114,11 +107,9 @@ export default {
                 .setTitle(buildTitle(location))
                 .setDescription(`The current temperature is ${temperature}°C.\n\n${description}.`);
             await interaction.followUp({ embeds: [ weatherEmbed ] });
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
             // Hack for letting the user know if they've submitted an invalid location :skull:
-            // Currently doesn't do much because the API no longer responds with 200 for an invalid location
             if (err.message.startsWith('WEATHER:')) {
                 await interaction.followUp({ content: `${err.message}`, ephemeral: true });
             } else {

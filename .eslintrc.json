@@ -71,7 +71,8 @@
             "warn",
             { "blankLine": "always", "prev": ["const", "var"], "next": "*"},
             { "blankLine": "any",    "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
-            { "blankLine": "never", "prev": "*", "next": "return" }
+            { "blankLine": "never", "prev": "*", "next": "return" },
+            { "blankLine": "never", "prev": ["const", "let", "var"], "next": "throw" }
         ],
         "no-lone-blocks": [ "warn" ],
         "padded-blocks": [
@@ -133,6 +134,12 @@
             }
         ],
         "array-bracket-newline": ["warn", { "multiline": true, "minItems": 3 }],
-        "object-curly-spacing": [ "warn", "always", { "arraysInObjects": true, "objectsInObjects": true } ]
+        "object-curly-spacing": [ "warn", "always", { "arraysInObjects": true, "objectsInObjects": true } ],
+        "space-infix-ops": "warn",
+        "keyword-spacing": "warn",
+        "brace-style": [ "warn", "1tbs", { "allowSingleLine": true } ],
+        "space-before-blocks": "warn",
+        "capitalized-comments": [ "warn", "always", { "ignoreConsecutiveComments": true } ],
+        "spaced-comment": "warn"
     }
 }
