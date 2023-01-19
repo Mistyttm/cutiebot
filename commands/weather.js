@@ -29,16 +29,32 @@ const buildUrl = (apiKey, location) =>
 const getWeatherData = async (locationOption) => {
     const res = await fetch(buildUrl(WEATHER_API_KEY, locationOption));
 
-    if (!res.ok) {
-        throw new Error('WEATHER: Sorry, an error occurred whilst fetching data.');
+
+    if(!res.ok){
+
+        if(res.status === 400 && (await res.json()).length === 0){
+            throw new Error({
+                message: 'WEATHER: Sorry, an error occurred whilst fetching data',
+            });
+        }
+
+        //if an empty object is returned, throw an error
+        if(res.status === 400){
+            const data = await res.json();
+
+            throw new Error(`WEATHER: Sorry, ${data.error?.message.toLowerCase()}`);
+        }
+
+        throw new Error({
+            message: 'WEATHER: Sorry, an error occurred whilst fetching data',
+            code: res.status,
+        });
     }
+
+
+
     const data = await res.json();
 
-    // Check for error response from API (e.g. when invalid data is supplied)
-    // Currently doesn't do anything because API now responds with 400 instead of 200 for invalid data
-    if (data.error) {
-        throw new Error(`WEATHER: Sorry, ${data.error?.message.toLowerCase()}`);
-    }
     // Format the data and return it as an object
     const weatherData = {
         location: `${data.location?.name}, ${localiseResults(data.location)}`,
