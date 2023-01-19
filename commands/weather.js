@@ -101,14 +101,14 @@ export default {
             weatherEmbed.setImage(image)
                 .setTitle(buildTitle(location))
                 .setDescription(`The current temperature is ${temperature}°C.\n\n${description}.`);
-            await interaction.followUp({ embeds: [ weatherEmbed ] });
+            await interaction.editReply({ embeds: [ weatherEmbed ], ephemeral: false });
         } catch (err) {
-            console.log(err);
             // Hack for letting the user know if they've submitted an invalid location :skull:
             if (err.message.startsWith('WEATHER:')) {
-                await interaction.followUp({ content: `${err.message}`, ephemeral: true });
+                await interaction.editReply(`${err.message}`);
             } else {
-                await interaction.followUp({ content: 'An error occurred, sorry!', ephemeral: true });
+                console.log(err);
+                await interaction.editReply('An error occurred, sorry!');
             }
         }
     },
