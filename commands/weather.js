@@ -1,48 +1,115 @@
 import dotenv from 'dotenv';
 import { pjson } from '../helpers/data.js';
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import { AsyncWeather } from '@cicciosgamino/openweather-apis';
 
 dotenv.config();
 const { WEATHER_API_KEY } = process.env;
 
-// Will not work without 'await', ignore hinting
-const weather = await new AsyncWeather();
+// Create the base embed
+const weatherEmbed = new EmbedBuilder()
+    .setColor(0x00008B)
+    .setAuthor({
+        name: 'CutieBot',
+        iconURL: 'https://cdn.discordapp.com/avatars/1055472048899641365/4d6ff8bb2f760373dd8a41e77300e73a.webp?size=32',
+    });
 
-// configuring the weather api
-weather.setLang('en');
-weather.setCoordinates(27.4785, 153.0284);
-weather.setUnits('metric');
-weather.setApiKey(WEATHER_API_KEY);
-const temperature = await weather.getTemperature((err, temp) => {
-    if (err) console.log(err);
-    return temp;
-});
+/**
+ * Creates url to get the current weather information from https://weatherapi.com/.
+ * @param {String} apiKey API key for weatherapi.com
+ * @param {String} location location to search for — supports city name, ip address,
+ * US/UK/CA postcode, IATA airport code, or co-ordinates as `lat,long`
+ *
+ * `default` co-ordinates for QUT
+ * @returns API url
+ */
+const buildUrl = (apiKey, location) =>
+    `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location ?? '-27.4785213,153.0261705'}`;
 
-const weatherDescription = await weather.getDescription((err, desc) => {
-    if (err) console.log(err);
-    return desc;
-});
+// Fetch data from the API
+const getWeatherData = async (locationOption) => {
+    const res = await fetch(buildUrl(WEATHER_API_KEY, locationOption));
+
+    if (!res.ok) {
+        // If the response contains a JSON object with a message, include the message with the error
+        if (res.status === 400) {
+            const data = await res.json();
+            throw new Error(`WEATHER: Sorry, ${data.error?.message.toLowerCase()}`);
+        }
+
+        throw new Error({
+            message: 'WEATHER: Sorry, an error occurred whilst fetching data',
+            code: res.status,
+        });
+    }
+    const data = await res.json();
+
+    // Format the data and return it as an object
+    const weatherData = {
+        location: `${data.location?.name}, ${localiseResults(data.location)}`,
+        temperature: Math.round(data.current?.temp_c),
+        description: data.current?.condition?.text,
+        image: `https:${data.current?.condition?.icon}`,
+    };
+    return weatherData;
+};
+
+// Check if the location for the data from the API is in Australia so that the result can be modified to include the
+// state instead of the country — helps with differentiating duplicate place names.
+// e.g. without this, 'Manly, QLD' and 'Manly, NSW' would both show up as 'Manly, Australia'
+const localiseResults = (locationData) => {
+    const states = {
+        'Australian Capital Territory': 'ACT',
+        'New South Wales': 'NSW',
+        'Northern Territory': 'NT',
+        'South Australia': 'SA',
+        'Tasmania': 'TAS',
+        'Queensland': 'QLD',
+        'Victoria': 'VIC',
+        'Western Australia': 'WA',
+    };
+    return locationData.country === 'Australia' ? states[locationData.region] : locationData.country;
+};
+
+// Generate the title for the embed response ('cutiebot v1.1.0: Weather...')
+const buildTitle = (location) => {
+    const locationStub = `${pjson.name} v${pjson.version}: Weather`;
+    // If the resolved location is South Brisbane then make the title 'QUT' (hack for default location)
+    return location === 'South Brisbane, QLD'
+        ? `${locationStub} at QUT` // 'cutiebot v1.1.0: Weather at QUT'
+        : `${locationStub} in ${location}`; // 'cutiebot v1.1.0: Weather in Place, Country'
+};
 
 export default {
     data: new SlashCommandBuilder()
         .setName('weather')
-        .setDescription('What\'s the weather at QUT?'),
-    async execute(interaction) {
-        try {
-            const infoEmbed = new EmbedBuilder()
-                .setColor(0x00008B)
-                .setTitle(`${pjson.name} v${pjson.version}: Weather at QUT`)
-                .setDescription(`The current temperature is ${Math.round(temperature)}°C\n\n${weatherDescription.charAt(0).toUpperCase().concat(weatherDescription.slice(1))}`)
-                .setAuthor({
-                    name: 'CutieBot',
-                    iconURL: 'https://cdn.discordapp.com/avatars/1055472048899641365/4d6ff8bb2f760373dd8a41e77300e73a.webp?size=32',
-                });
+        .setDescription('What\'s the weather?')
+        .addStringOption((option) =>
+            option.setName('location')
+                .setDescription('Location to get the weather for (default: QUT). Supports city name, co-ordinates, or IP address.')),
 
-            await interaction.reply({ embeds: [ infoEmbed ] });
+    async execute(interaction) {
+        // Defer the reply in case the API call takes a while
+        await interaction.deferReply();
+
+        try {
+            // Get the location provided by user or, if no option is supplied, set the location to undefined.
+            // This is necessary due to discord.js returning null if no option is provided, which will not
+            // cause the default parameters in getWeatherData() to be used.
+            const locationOption = await interaction.options.getString('location');
+            const { location, temperature, description, image } = await getWeatherData(locationOption);
+
+            weatherEmbed.setImage(image)
+                .setTitle(buildTitle(location))
+                .setDescription(`The current temperature is ${temperature}°C.\n\n${description}.`);
+            await interaction.editReply({ embeds: [ weatherEmbed ], ephemeral: false });
         } catch (err) {
-            console.log(err);
-            interaction.reply({ content: 'An error occurred, sorry!', ephemeral: true });
+            // Hack for letting the user know if they've submitted an invalid location :skull:
+            if (err.message.startsWith('WEATHER:')) {
+                await interaction.editReply(`${err.message}`);
+            } else {
+                console.log(err);
+                await interaction.editReply('An error occurred, sorry!');
+            }
         }
     },
 };
