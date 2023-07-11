@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/Mistyttm/cutiebot#readme",
   "dependencies": {
+    "axios": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12",
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
     "nodemailer": "^6.8.0"
