@@ -62,18 +62,15 @@ async function getUnitPage(unit) {
     for (let i = 0; i < test.length; i++) {
         test[i] = test[i].trim();
         if (test[i].includes("Unit code")) {
-            test[i] = test[i].replace("Unit code", "**Unit Code:**");
+            test[i] = test[i].replace("Unit code ", "");
         } else if (test[i].includes("Faculty")) {
-            test[i] = test[i].replace("Faculty", "**Faculty:**");
+            test[i] = test[i].replace("Faculty ", "");
         } else if (test[i].includes("School/Discipline")) {
-            test[i] = test[i].replace(
-                "School/Discipline",
-                "**School/Discipline:**"
-            );
+            test[i] = test[i].replace("School/Discipline ", "");
         } else if (test[i].includes("Study area")) {
-            test[i] = test[i].replace("Study area", "**Study Area:**");
+            test[i] = test[i].replace("Study area ", "");
         } else if (test[i].includes("Credit points")) {
-            test[i] = test[i].replace("Credit points", "**Credit Points:**");
+            test[i] = test[i].replace("Credit points ", "");
         }
     }
 
@@ -96,16 +93,51 @@ export default {
             // Set the title now that we have access to the interaction
             unitEmbed
                 .setTitle(`${page.flat()[0]}`)
+                .setURL(
+                    `https://www.qut.edu.au/study/unit/unit-sorcery/courseloop-subject-offerings?unitCode=${unit}&years=2023`
+                )
                 .setDescription(
                     `
             **${result[0].display_name}**\n\n${result[0].overview.replace(
                         /<\/?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)\/?>/g,
                         ""
-                    )}\n\n - ${page.flat()[1]}\n - ${page.flat()[2]}\n - ${page.flat()[3]}\n - ${page.flat()[4]}\n - ${page.flat()[5]}`
+                    )}\n\n`
                 )
                 .setThumbnail(
                     "https://www.qut.edu.au/__data/assets/image/0007/909781/qut-logo-og-1200.jpg"
-                );
+                )
+                .addFields(
+                    { name: "\u200B", value: "\u200B" },
+                    {
+                        name: "Faculty",
+                        value: page.flat()[2],
+                        inline: true
+                    },
+                    {
+                        name: "School/Discipline",
+                        value: page.flat()[3],
+                        inline: true
+                    }
+                )
+                .addFields(
+                    {
+                        name: "Study Area",
+                        value: page.flat()[4],
+                        inline: true
+                    },
+                    {
+                        name: "Credit Points",
+                        value: page.flat()[5],
+                        inline: true
+                    },
+                    { name: "\u200B", value: "\u200B" }
+                )
+                .setTimestamp()
+                .setFooter({
+                    text: page.flat()[0],
+                    iconURL:
+                        "https://www.qut.edu.au/__data/assets/image/0007/909781/qut-logo-og-1200.jpg"
+                });
             await interaction.editReply({
                 embeds: [unitEmbed]
             });
