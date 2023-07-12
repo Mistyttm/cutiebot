@@ -6,6 +6,11 @@ import {
 import axios from "axios";
 import * as cheerio from "cheerio";
 
+
+// TODO: Add functionality to scroll through pages
+//* Pricing and unit assessments (if available)
+
+
 // create the slash command
 const unitCommand = new SlashCommandBuilder()
     .setName("unitinfo")
