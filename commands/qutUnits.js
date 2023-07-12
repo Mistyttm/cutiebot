@@ -6,6 +6,7 @@ import {
 import axios from "axios";
 import * as cheerio from "cheerio";
 
+// create the slash command
 const unitCommand = new SlashCommandBuilder()
     .setName("unitinfo")
     .setDescription("See info for a unit")
@@ -17,6 +18,7 @@ const unitCommand = new SlashCommandBuilder()
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels);
 
+// Calls the QUT API to get some basic description information
 async function getUnit(unit) {
     const response = await fetch(
         `https://www.qut.edu.au/study/unit/unit-sorcery/courseloop-subject-offerings?unitCode=${unit}&years=2023`
@@ -27,6 +29,7 @@ async function getUnit(unit) {
     return result;
 }
 
+// Scrape the QUT webpage for info about the requested unit
 async function getUnitPage(unit) {
     const { data } = await axios.get(`/unit`, {
         baseURL: "https://www.qut.edu.au/study",
@@ -38,6 +41,7 @@ async function getUnitPage(unit) {
     const $ = cheerio.load(data);
     const extraInfo = [];
 
+    // use cheerio to grab all the elements under these CSS classes
     $(
         "h1.hero__header__title > span, div.panel-content > dl.row"
     ).each((_idx, el) => {
@@ -45,6 +49,7 @@ async function getUnitPage(unit) {
         extraInfo.push(info);
     });
 
+    // reformats the data to be usable in the embed by removing useless data
     let newInfo = extraInfo[1].split("\n").join("").split("   ");
     for (let i = 0; i < newInfo.length; i++) {
         newInfo[i] = newInfo[i]
@@ -57,6 +62,7 @@ async function getUnitPage(unit) {
 
     const newExtraInfo = [extraInfo[0], newInfo];
 
+    // Add the unit requiste information to a new array to format
     let newNewInfo = extraInfo[3]
         .split("\n")
         .join("")
@@ -65,6 +71,7 @@ async function getUnitPage(unit) {
         .split("  ")
         .splice(1);
     if (newNewInfo.length !== 0) {
+        // if the assumed knowledge section exists, add empty data at index 1 for organisation
         if (newNewInfo[0].includes("Assumed")) {
             const index = 1;
             newNewInfo = newNewInfo.join("");
@@ -77,6 +84,7 @@ async function getUnitPage(unit) {
         }
     }
 
+    // Replace all section headers with an empty string
     for (let i = 0; i < newNewInfo.length; i++) {
         if (newNewInfo[i].includes("Prerequisites")) {
             newNewInfo[i] = newNewInfo[i].replace("Prerequisites ", "");
@@ -95,12 +103,14 @@ async function getUnitPage(unit) {
 export default {
     data: unitCommand,
     async execute(interaction) {
+        // Defer the reply until the api calls have finished
         await interaction.deferReply();
 
         try {
             const unit = interaction.options.getString("unit");
             const result = await getUnit(unit);
             const page = (await getUnitPage(unit)).flat();
+            // create the embed in here to avoid duplicate fields
             const unitEmbed = new EmbedBuilder()
                 .setColor(0x00008b)
                 .setAuthor({
@@ -151,7 +161,7 @@ export default {
                         inline: true
                     }
                 );
-            // Set the title now that we have access to the interaction
+            // Check whether the assumed knowledge section exists
             if (page[8]) {
                 unitEmbed.addFields(
                     {
@@ -164,6 +174,7 @@ export default {
                     },
                     { name: "\u200B", value: "\u200B" }
                 );
+            // check whether the prerequisites page and not equivalents exists
             } else if (!page[7] && page[6]) {
                 unitEmbed.addFields(
                     {
@@ -172,6 +183,7 @@ export default {
                     },
                     { name: "\u200B", value: "\u200B" }
                 );
+            // check if both prerequisites and equivalents exists
             } else if (page[6] && page[7]) {
                 unitEmbed.addFields(
                     {
@@ -184,6 +196,7 @@ export default {
                     },
                     { name: "\u200B", value: "\u200B" }
                 );
+            // if unit has none of the above sections, add a breaker field for spacing
             } else {
                 unitEmbed.addFields({ name: "\u200B", value: "\u200B" });
             }
@@ -192,6 +205,7 @@ export default {
                 embeds: [unitEmbed]
             });
         } catch (err) {
+            // Error response
             console.log(err);
             await interaction.editReply({
                 content:
