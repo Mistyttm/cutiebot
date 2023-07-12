@@ -45,57 +45,49 @@ async function getUnitPage(unit) {
         extraInfo.push(info);
     });
 
-    let newInfo = extraInfo[1].split("\n");
-    let test = newInfo.join("");
-
-    test = test.split("   ");
-
-    for (let i = 0; i < test.length; i++) {
-        test[i] = test[i].trim();
-        if (test[i].includes("Unit code")) {
-            test[i] = test[i].replace("Unit code ", "");
-        } else if (test[i].includes("Faculty")) {
-            test[i] = test[i].replace("Faculty ", "");
-        } else if (test[i].includes("School/Discipline")) {
-            test[i] = test[i].replace("School/Discipline ", "");
-        } else if (test[i].includes("Study area")) {
-            test[i] = test[i].replace("Study area ", "");
-        } else if (test[i].includes("Credit points")) {
-            test[i] = test[i].replace("Credit points ", "");
-        }
+    let newInfo = extraInfo[1].split("\n").join("").split("   ");
+    for (let i = 0; i < newInfo.length; i++) {
+        newInfo[i] = newInfo[i]
+            .trim()
+            .replace(
+                /^(Unit code|Faculty|School\/Discipline|Study area|Credit points) /,
+                ""
+            );
     }
 
-    const newExtraInfo = [];
-    newExtraInfo.push(extraInfo[0]);
-    newExtraInfo.push(test);
+    const newExtraInfo = [extraInfo[0], newInfo];
 
-    let newNewInfo = extraInfo[3].split("\n");
-    let test2 = newNewInfo.join("");
-
-    test2 = test2.split("   ");
-    test2 = test2.join("");
-    test2 = test2.split("  ");
-    test2 = test2.splice(1);
-    if (test2.length !== 0) {
-        if (test2[0].includes("Assumed")) {
+    let newNewInfo = extraInfo[3]
+        .split("\n")
+        .join("")
+        .split("   ")
+        .join("")
+        .split("  ")
+        .splice(1);
+    if (newNewInfo.length !== 0) {
+        if (newNewInfo[0].includes("Assumed")) {
             const index = 1;
-            test2 = test2.join("");
-            test2 = test2.split(/(?![0-9])\s(?=A)/);
-            test2 = [...test2.slice(0, index), "", ...test2.slice(index)];
+            newNewInfo = newNewInfo.join("");
+            newNewInfo = newNewInfo.split(/(?![0-9])\s(?=A)/);
+            newNewInfo = [
+                ...newNewInfo.slice(0, index),
+                "",
+                ...newNewInfo.slice(index)
+            ];
         }
     }
 
-    for (let i = 0; i < test2.length; i++) {
-        if (test2[i].includes("Prerequisites")) {
-            test2[i] = test2[i].replace("Prerequisites ", "");
-        } else if (test2[i].includes("Equivalents")) {
-            test2[i] = test2[i].replace("Equivalents ", "");
-        } else if (test2[i].includes("Assumed")) {
-            test2[i] = test2[i].replace("Assumed knowledge ", "");
+    for (let i = 0; i < newNewInfo.length; i++) {
+        if (newNewInfo[i].includes("Prerequisites")) {
+            newNewInfo[i] = newNewInfo[i].replace("Prerequisites ", "");
+        } else if (newNewInfo[i].includes("Equivalents")) {
+            newNewInfo[i] = newNewInfo[i].replace("Equivalents ", "");
+        } else if (newNewInfo[i].includes("Assumed")) {
+            newNewInfo[i] = newNewInfo[i].replace("Assumed knowledge ", "");
         }
     }
 
-    newExtraInfo.push(test2);
+    newExtraInfo.push(newNewInfo);
 
     return newExtraInfo;
 }
