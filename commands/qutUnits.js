@@ -76,12 +76,22 @@ async function getUnitPage(unit) {
     test2 = test2.join("");
     test2 = test2.split("  ");
     test2 = test2.splice(1);
+    if (test2.length !== 0) {
+        if (test2[0].includes("Assumed")) {
+            const index = 1;
+            test2 = test2.join("");
+            test2 = test2.split(/(?![0-9])\s(?=A)/);
+            test2 = [...test2.slice(0, index), "", ...test2.slice(index)];
+        }
+    }
 
     for (let i = 0; i < test2.length; i++) {
         if (test2[i].includes("Prerequisites")) {
             test2[i] = test2[i].replace("Prerequisites ", "");
         } else if (test2[i].includes("Equivalents")) {
             test2[i] = test2[i].replace("Equivalents ", "");
+        } else if (test2[i].includes("Assumed")) {
+            test2[i] = test2[i].replace("Assumed knowledge ", "");
         }
     }
 
@@ -125,11 +135,8 @@ export default {
                     text: page[0],
                     iconURL:
                         "https://www.qut.edu.au/__data/assets/image/0007/909781/qut-logo-og-1200.jpg"
-                });
-            console.log(page);
-            // Set the title now that we have access to the interaction
-            if (!page[6]) {
-                unitEmbed.addFields(
+                })
+                .addFields(
                     { name: "\u200B", value: "\u200B" },
                     {
                         name: "Faculty",
@@ -150,77 +157,43 @@ export default {
                         name: "Credit Points",
                         value: page[5],
                         inline: true
+                    }
+                );
+            // Set the title now that we have access to the interaction
+            if (page[8]) {
+                unitEmbed.addFields(
+                    {
+                        name: "Prerequisites",
+                        value: page[6]
+                    },
+                    {
+                        name: "Assumed Knowledge",
+                        value: page[8]
                     },
                     { name: "\u200B", value: "\u200B" }
                 );
             } else if (!page[7] && page[6]) {
-                unitEmbed
-                    .addFields(
-                        { name: "\u200B", value: "\u200B" },
-                        {
-                            name: "Faculty",
-                            value: page[2],
-                            inline: true
-                        },
-                        {
-                            name: "School/Discipline",
-                            value: page[3],
-                            inline: true
-                        },
-                        {
-                            name: "Study Area",
-                            value: page[4],
-                            inline: true
-                        },
-                        {
-                            name: "Credit Points",
-                            value: page[5],
-                            inline: true
-                        }
-                    )
-                    .addFields(
-                        {
-                            name: "Prerequisites",
-                            value: page[6]
-                        },
-                        { name: "\u200B", value: "\u200B" }
-                    );
+                unitEmbed.addFields(
+                    {
+                        name: "Prerequisites",
+                        value: page[6]
+                    },
+                    { name: "\u200B", value: "\u200B" }
+                );
+            } else if (page[6] && page[7]) {
+                unitEmbed.addFields(
+                    {
+                        name: "Prerequisites",
+                        value: page[6]
+                    },
+                    {
+                        name: "Equivalents",
+                        value: page[7]
+                    },
+                    { name: "\u200B", value: "\u200B" }
+                );
             } else {
-                unitEmbed
-                    .addFields(
-                        { name: "\u200B", value: "\u200B" },
-                        {
-                            name: "Faculty",
-                            value: page[2],
-                            inline: true
-                        },
-                        {
-                            name: "School/Discipline",
-                            value: page[3],
-                            inline: true
-                        },
-                        {
-                            name: "Study Area",
-                            value: page[4],
-                            inline: true
-                        },
-                        {
-                            name: "Credit Points",
-                            value: page[5],
-                            inline: true
-                        }
-                    )
-                    .addFields(
-                        {
-                            name: "Prerequisites",
-                            value: page[6]
-                        },
-                        {
-                            name: "Equivalents",
-                            value: page[7]
-                        },
-                        { name: "\u200B", value: "\u200B" }
-                    );
+                unitEmbed.addFields({ name: "\u200B", value: "\u200B" });
             }
 
             await interaction.editReply({
