@@ -1,6 +1,6 @@
 {
   "name": "cutiebot",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A bot for helping QUT servers",
   "type": "module",
   "main": "index.js",
