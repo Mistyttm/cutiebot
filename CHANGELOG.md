@@ -1,8 +1,14 @@
 # Changelog
 
+## v1.2.1
+
+ - Add a character limit to `/unitinfo`
+   - min 6
+   - max 8
+
 ## v1.2.0
 
- - Add /unitinfo [`code`] command
+ - Add `/unitinfo [`code`]` command
    - Search for any unit at QUT and recieve information about the unit including Prerequisites and Equivalents
  - Do a little bit of code cleanup
 ## v1.1.1
