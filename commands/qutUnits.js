@@ -6,10 +6,8 @@ import {
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-
 // TODO: Add functionality to scroll through pages
 //* Pricing and unit assessments (if available)
-
 
 // create the slash command
 const unitCommand = new SlashCommandBuilder()
@@ -20,6 +18,8 @@ const unitCommand = new SlashCommandBuilder()
             .setName("unit")
             .setDescription("The unit you would like information on")
             .setRequired(true)
+            .setMaxLength(8)
+            .setMinLength(6)
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels);
 
@@ -110,9 +110,9 @@ export default {
     async execute(interaction) {
         // Defer the reply until the api calls have finished
         await interaction.deferReply();
+        const unit = interaction.options.getString("unit");
 
         try {
-            const unit = interaction.options.getString("unit");
             const result = await getUnit(unit);
             const page = (await getUnitPage(unit)).flat();
             // create the embed in here to avoid duplicate fields
@@ -179,7 +179,7 @@ export default {
                     },
                     { name: "\u200B", value: "\u200B" }
                 );
-            // check whether the prerequisites page and not equivalents exists
+                // check whether the prerequisites page and not equivalents exists
             } else if (!page[7] && page[6]) {
                 unitEmbed.addFields(
                     {
@@ -188,7 +188,7 @@ export default {
                     },
                     { name: "\u200B", value: "\u200B" }
                 );
-            // check if both prerequisites and equivalents exists
+                // check if both prerequisites and equivalents exists
             } else if (page[6] && page[7]) {
                 unitEmbed.addFields(
                     {
@@ -201,7 +201,7 @@ export default {
                     },
                     { name: "\u200B", value: "\u200B" }
                 );
-            // if unit has none of the above sections, add a breaker field for spacing
+                // if unit has none of the above sections, add a breaker field for spacing
             } else {
                 unitEmbed.addFields({ name: "\u200B", value: "\u200B" });
             }
