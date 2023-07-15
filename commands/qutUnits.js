@@ -20,8 +20,7 @@ const unitCommand = new SlashCommandBuilder()
             .setRequired(true)
             .setMaxLength(8)
             .setMinLength(6)
-    )
-    .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels);
+    );
 
 // Calls the QUT API to get some basic description information
 async function getUnit(unit) {
