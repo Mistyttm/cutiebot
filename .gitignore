@@ -1,3 +1,5 @@
+*.lockb
+
 # Discord Bot
 .vagrant/
 .vscode
