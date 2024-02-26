@@ -124,7 +124,7 @@ export default {
                 })
                 .setTitle(`${page[0]}`)
                 .setURL(
-                    `https://www.qut.edu.au/study/unit/unit-sorcery/courseloop-subject-offerings?unitCode=${unit}&years=2023`
+                    `https://www.qut.edu.au/study/unit?unitCode=${unit}`
                 )
                 .setDescription(
                     `**${result[0]
