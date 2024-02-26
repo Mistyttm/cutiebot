@@ -6,7 +6,7 @@
 
 This is a reimplementation of the legacy python based [Cutiebot](https://github.com/cutiedevs/LegacyDiscordQUTVerificationBot). It has been rebuilt from the ground up in JavaScript and [Discord.js](https://discord.js.org/). It was designed to be used with QUT discord servers as a helping hand for QUT students.
 
-[Invite Cutiebot to your server:](https://discord.com/api/oauth2/authorize?client_id=1055472048899641365&permissions=8&scope=bot%20applications.commands)
+[Invite Cutiebot to your server:](https://discord.com/api/oauth2/authorize?client_id=1055472048899641365&permissions=19132969380982&scope=bot%20applications.commands)
 
 ## Features
 
